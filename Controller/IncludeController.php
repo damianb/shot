@@ -20,21 +20,28 @@
 
 namespace emberlabs\shot\Controller;
 use \emberlabs\shot\Kernel;
-use \OpenFlame\Framework\Route\RouteInstance;
+use \emberlabs\shot\Page\Request;
+use \emberlabs\shot\Page\Response;
 use \OpenFlame\Framework\Core\Internal\FileException;
 
 /**
  * Shot - Include Controller
- * 	     Provides a crazilyy easy way to create controllers.
+ * 	     Provides a crazily-easy way to create controllers.
  *
  * @package     shot
  * @author      emberlabs.org
  * @license     http://opensource.org/licenses/mit-license.php The MIT License
  * @link        https://github.com/emberlabs/shot/
  */
-class IncludeController implements ControllerInterface
+class IncludeController
+	implements ControllerInterface
 {
-	protected $name, $template, $auths, $route, $include_file, $objects;
+	protected $request, $name, $auths, $include_file, $objects;
+
+	public function __construct(Request $request)
+	{
+		$this->request = $request;
+	}
 
 	public function getName()
 	{
@@ -48,18 +55,6 @@ class IncludeController implements ControllerInterface
 		return $this;
 	}
 
-	public function getTemplate()
-	{
-		return $this->template;
-	}
-
-	public function setTemplate($template)
-	{
-		$this->template = (string) $template;
-
-		return $this;
-	}
-
 	public function getRequiredAuths()
 	{
 		return $this->auths;
@@ -68,18 +63,6 @@ class IncludeController implements ControllerInterface
 	public function setRequiredAuths(array $auths)
 	{
 		$this->auths = $auths;
-
-		return $this;
-	}
-
-	public function getRoute()
-	{
-		return $this->route;
-	}
-
-	public function setRoute(RouteInstance $route)
-	{
-		$this->route = $route;
 
 		return $this;
 	}
@@ -113,31 +96,35 @@ class IncludeController implements ControllerInterface
 		return $this;
 	}
 
-	public function before(RouteInstance $route = NULL)
-	{
-		// asdf
-	}
+	public function before() { }
 
 	public function runController()
 	{
 		// Assign scope variables for the controller
-		$route = $this->getRoute();
-		$template_name = $this->getTemplate();
+		$request = $this->request;
+
 		if($this->getInjectedObjects())
 		{
 			extract(Kernel::mget($this->getInjectedObjects()), EXTR_OVERWRITE);
 		}
 
 		// Set $return to NULL - the include file can overwrite the value itself if it wants.
-		$return = NULL;
+		$response = new Response();
+		$response->setContentType('html');
 
-		include $this->getIncludeFile();
+		$template = array();
+		$template_name = '';
 
-		return $return;
+		require $this->getIncludeFile();
+
+		$response->setTemplateVars($template)
+			->setTemplate($template_name);
+
+		return $response;
 	}
 
-	public function after()
+	public function after(Response $response)
 	{
-		// asdf
+		return $response;
 	}
 }

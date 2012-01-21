@@ -20,6 +20,7 @@
 
 namespace emberlabs\shot\Live;
 use \emberlabs\shot\Kernel;
+use \emberlabs\shot\Page\Request;
 use \OpenFlame\Framework\Core\Autoloader;
 use \OpenFlame\Framework\Event\Instance as Event;
 use \OpenFlame\Framework\Exception\EncryptedHandler as ExceptionHandler;
@@ -63,10 +64,17 @@ Kernel::register('shot.page.excecute.controller', 0, function(Event $event) {
 
 	try {
 		$route = $router->processRequest($uri);
+
+		$request = new Request();
+		$request->setURI($uri)
+			->setRoute($route);
+
 		$controller = $route->getController();
 		Kernel::setObject('shot.controller', $controller);
 
-		$controller->runController();
+		$controller->before();
+		$response = $controller->runController();
+		$controller->after($response);
 	}
 	catch(RedirectException $e)
 	{

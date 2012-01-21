@@ -35,19 +35,23 @@ interface ModelInterface
 
 	public function setID($name);
 
+	public function get($field, $default = NULL);
+
+	public function isset($field);
+
+	public function set($field, $value = NULL);
+
+	public function isClean();
+
 	public function load();
-
-	protected function get($field, $default = NULL);
-
-	protected function set($field, $what, $value = NULL);
 
 	public function save();
 
 	public function delete();
 
-	public function isClean();
-
 	public function __get($field);
+
+	public function __isset($field);
 
 	public function __set($field);
 }

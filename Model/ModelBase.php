@@ -21,8 +21,8 @@
 namespace emberlabs\shot\Model;
 
 /**
- * Shot - Model interface
- * 	     Provides model prototype for models to fulfill.
+ * Shot - Model base
+ * 	     Provides base methods for models to leverage.
  *
  * @package     shot
  * @author      emberlabs.org
@@ -31,28 +31,46 @@ namespace emberlabs\shot\Model;
  */
 abstract class ModelBase
 {
-	protected $data, $pending;
+	protected $id, $data, $pending;
 
 	public function getID()
 	{
-		// asdf
+		return $this->id;
 	}
 
 	public function setID($name)
 	{
-		// asdf
+		$this->id = $name;	
+
+		return $this;
 	}
 
-	abstract public function load();
-
-	protected function get($field, $default = NULL)
+	public function get($field, $default = NULL)
 	{
-		// asdf
+		if(isset($this->pending[(string) $field]))
+		{
+			return $this->pending[(string) $field];
+		}
+		elseif(isset($this->data[(string) $field]))
+		{
+			return $this->data[(string) $field];
+		}
+		else
+		{
+			return $default;
+		}
 	}
 
-	protected function set($field, $what, $value = NULL)
+	public function isset($field)
 	{
-		// asdf
+		return (isset($this->pending[(string) $field]) || isset($this->data[(string) $field])) ? true : false;
+	}
+
+	public function set($field, $value)
+	{
+		$this->pending[(string) $field] = $value;
+
+		return $this;
 	}
 
 	public function isClean()
@@ -60,17 +78,24 @@ abstract class ModelBase
 		return (!empty($this->pending)) ? true : false;
 	}
 
+	abstract public function load();
+
 	abstract public function save();
 
 	abstract public function delete();
 
 	public function __get($field)
 	{
-		// asdf
+		return $this->get($field, NULL);
 	}
 
-	public function __set($field)
+	public function __isset($field)
 	{
-		// asdf
+		return $this->isset($field);
+	}
+
+	public function __set($field, $value)
+	{
+		return $this->set($field, $value);
 	}
 }

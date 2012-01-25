@@ -21,7 +21,7 @@
 namespace emberlabs\shot\Controller;
 use \emberlabs\shot\Kernel;
 use \emberlabs\shot\Request\RequestInterface;
-use \emberlabs\shot\Response\HTTP as Response;
+use \emberlabs\shot\Response\HTTP as HTTPResponse;
 use \emberlabs\shot\Response\ResponseInterface;
 
 /**
@@ -71,7 +71,7 @@ abstract class ObjectController
 
 	public function runController()
 	{
-		$response = new Response();
+		$response = new HTTPResponse();
 		$response->setContentType('html');
 
 		return $response;

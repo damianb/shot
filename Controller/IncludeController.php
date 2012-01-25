@@ -21,7 +21,7 @@
 namespace emberlabs\shot\Controller;
 use \emberlabs\shot\Kernel;
 use \emberlabs\shot\Request\RequestInterface;
-use \emberlabs\shot\Response\HTTP as Response;
+use \emberlabs\shot\Response\HTTP as HTTPResponse;
 use \emberlabs\shot\Response\ResponseInterface;
 use \OpenFlame\Framework\Core\Internal\FileException;
 
@@ -110,7 +110,7 @@ class IncludeController
 		}
 
 		// Set $return to NULL - the include file can overwrite the value itself if it wants.
-		$response = new Response();
+		$response = new HTTPResponse();
 		$response->setContentType('html');
 
 		$template = array();

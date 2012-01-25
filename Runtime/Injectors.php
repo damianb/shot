@@ -18,7 +18,7 @@
  *
  */
 
-namespace emberlabs\shot\Live;
+namespace emberlabs\shot\Runtime;
 use \emberlabs\shot\Kernel;
 use \OpenFlame\Framework\Core\DependencyInjector;
 use \OpenFlame\Framework\Exception\EncryptedHandler as ExceptionHandler;

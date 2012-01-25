@@ -18,7 +18,7 @@
  *
  */
 
-namespace emberlabs\shot\Live;
+namespace emberlabs\shot\Runtime;
 use \emberlabs\shot\Kernel;
 use \emberlabs\shot\Page\Request;
 use \OpenFlame\Framework\Core\Autoloader;

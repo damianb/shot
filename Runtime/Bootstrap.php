@@ -18,9 +18,10 @@
  *
  */
 
-namespace emberlabs\shot\Live;
+namespace emberlabs\shot\Runtime;
 use \emberlabs\shot\Kernel;
 use \OpenFlame\Framework\Core\Autoloader;
+use \OpenFlame\Framework\Core\Internal\RequirementException;
 use \OpenFlame\Framework\Exception\EncryptedHandler as ExceptionHandler;
 use \OpenFlame\Framework\Utility\JSON;
 use \OpenFlame\Dbal\Connection as DbalConnection;
@@ -90,9 +91,10 @@ if(@get_magic_quotes_runtime())
 	throw new RequirementException('Application will not run with magic_quotes_runtime enabled; please disable magic_quotes_runtime to run this application.');
 }
 
-require SHOT_INCLUDE_ROOT . 'emberlabs/shot/Live/Functions.php';
-require SHOT_INCLUDE_ROOT . 'emberlabs/shot/Live/Injectors.php';
-require SHOT_INCLUDE_ROOT . 'emberlabs/shot/Live/Listeners.php';
+// load special runtime files
+require SHOT_INCLUDE_ROOT . 'emberlabs/shot/Runtime/Functions.php';
+require SHOT_INCLUDE_ROOT . 'emberlabs/shot/Runtime/Injectors.php';
+require SHOT_INCLUDE_ROOT . 'emberlabs/shot/Runtime/Listeners.php';
 
 // do we leave debug on, or...
 if(!SHOT_DEBUG)
@@ -101,3 +103,5 @@ if(!SHOT_DEBUG)
 	@ini_set("display_errors", "Off");
 	ExceptionHandler::disableDebug();
 }
+
+unset($_e_reporting);

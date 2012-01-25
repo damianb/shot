@@ -29,7 +29,8 @@ namespace emberlabs\shot\Model;
  * @license     http://opensource.org/licenses/mit-license.php The MIT License
  * @link        https://github.com/emberlabs/shot/
  */
-abstract class ModelBase
+abstract class ModelBase 
+	implements ModelInterface
 {
 	protected $id, $data, $pending;
 
@@ -40,7 +41,7 @@ abstract class ModelBase
 
 	public function setID($name)
 	{
-		$this->id = $name;	
+		$this->id = $name;
 
 		return $this;
 	}

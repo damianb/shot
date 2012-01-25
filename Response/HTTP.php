@@ -18,19 +18,20 @@
  *
  */
 
-namespace emberlabs\shot\Page;
+namespace emberlabs\shot\Response;
 use \emberlabs\shot\Kernel;
 
 /**
- * Shot - Controller interface
- * 	     Provides controller prototype for controllers to fulfill.
+ * Shot - Response object
+ * 	     Standard HTTP response object.
  *
  * @package     shot
  * @author      emberlabs.org
  * @license     http://opensource.org/licenses/mit-license.php The MIT License
  * @link        https://github.com/emberlabs/shot/
  */
-class Response
+class Standard
+	implements ResponseInterface
 {
 	protected $t_vars, $content_type, $headers, $template;
 
@@ -117,5 +118,10 @@ class Response
 	public function setResponseCode($code = 200)
 	{
 		$this->response = (int) $code;
+	}
+
+	public function display()
+	{
+		// asdf
 	}
 }

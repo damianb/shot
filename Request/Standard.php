@@ -18,29 +18,32 @@
  *
  */
 
-namespace emberlabs\shot\Page;
+namespace emberlabs\shot\Request;
 use \emberlabs\shot\Kernel;
 use \OpenFlame\Framework\Route\RouteInstance;
 
 /**
- * Shot - Controller interface
- * 	     Provides controller prototype for controllers to fulfill.
+ * Shot - Standard request object
+ * 	     Handles and provides request data to controllers.
  *
  * @package     shot
  * @author      emberlabs.org
  * @license     http://opensource.org/licenses/mit-license.php The MIT License
  * @link        https://github.com/emberlabs/shot/
  */
-class Request
+class Standard
+	implements RequestInterface
 {
 	protected $method, $referer, $useragent, $ip, $uri, $route;
 
 	public function __construct()
 	{
-		$this->method = $_SERVER['REQUEST_METHOD'];
-		$this->referer = $_SERVER['HTTP_REFERER'];
-		$this->useragent = $_SERVER['HTTP_USER_AGENT'];
-		$this->ip = $_SERVER['REMOTE_ADDR'];
+		$input = Kernel::get('input');
+		
+		$this->method = $input->get('SERVER::REQUEST_METHOD', 'GET')->getClean();
+		$this->referer = $input->get('SERVER::HTTP_REFERER', '-')->getClean();
+		$this->useragent = $input->get('SERVER::HTTP_USER_AGENT', '-')->getClean();
+		$this->ip = $input->get('SERVER::REMOTE_ADDR', '127.0.0.1')->getClean();
 	}
 
 	public function getMethod()
@@ -90,5 +93,10 @@ class Request
 	public function getInput($input, $default = '')
 	{
 		return Kernel::get('input')->getInput($input, $default)->getClean();
+	}
+
+	public function isAuthenticated()
+	{
+		return false;
 	}
 }

@@ -40,7 +40,7 @@ $injector->setInjector('query', function() use($injector) {
 	return Query::newInstance();
 });
 
-$injector->setInjector('squery', function() use($injector) {
+$injector->setInjector('querybuilder', function() use($injector) {
 	$injector->get('dbal');
 	return QueryBuilder::newInstance();
 });

@@ -109,7 +109,7 @@ class IncludeController
 			extract(Kernel::mget($this->getInjectedObjects()), EXTR_OVERWRITE);
 		}
 
-		// Set $return to NULL - the include file can overwrite the value itself if it wants.
+		// Prepare the $response var - the include file can change stuff afterwards itself if it wants.
 		$response = new HTTPResponse();
 		$response->setContentType('html');
 

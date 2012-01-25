@@ -20,9 +20,9 @@
 
 namespace emberlabs\shot\Controller;
 use \emberlabs\shot\Kernel;
-use \emberlabs\shot\Page\Request;
-use \emberlabs\shot\Page\Response;
-use \OpenFlame\Framework\Core\Internal\FileException;
+use \emberlabs\shot\Request\RequestInterface;
+use \emberlabs\shot\Response\HTTP as Response;
+use \emberlabs\shot\Response\ResponseInterface;
 
 /**
  * Shot - Object-based controller base
@@ -37,6 +37,11 @@ abstract class ObjectController
 	implements ControllerInterface
 {
 	protected $request, $name, $auths;
+
+	public function __construct(RequestInterface $request)
+	{
+		$this->request = $request;
+	}
 
 	public function getName()
 	{
@@ -72,7 +77,7 @@ abstract class ObjectController
 		return $response;
 	}
 
-	public function after(Response $response)
+	public function after(ResponseInterface $response)
 	{
 		return $response;
 	}

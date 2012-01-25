@@ -20,8 +20,9 @@
 
 namespace emberlabs\shot\Controller;
 use \emberlabs\shot\Kernel;
-use \emberlabs\shot\Page\Request;
-use \emberlabs\shot\Page\Response;
+use \emberlabs\shot\Request\RequestInterface;
+use \emberlabs\shot\Response\HTTP as Response;
+use \emberlabs\shot\Response\ResponseInterface;
 use \OpenFlame\Framework\Core\Internal\FileException;
 
 /**
@@ -38,7 +39,7 @@ class IncludeController
 {
 	protected $request, $name, $auths, $include_file, $objects;
 
-	public function __construct(Request $request)
+	public function __construct(RequestInterface $request)
 	{
 		$this->request = $request;
 	}
@@ -123,7 +124,7 @@ class IncludeController
 		return $response;
 	}
 
-	public function after(Response $response)
+	public function after(ResponseInterface $response)
 	{
 		return $response;
 	}

@@ -32,26 +32,16 @@ namespace emberlabs\shot\Model;
 interface ModelInterface
 {
 	public function getID();
-
 	public function setID($name);
-
 	public function get($field, $default = NULL);
-
 	public function isset($field);
-
 	public function set($field, $value = NULL);
-
 	public function isClean();
-
+	public function create();
 	public function load();
-
 	public function save();
-
 	public function delete();
-
 	public function __get($field);
-
 	public function __isset($field);
-
 	public function __set($field);
 }

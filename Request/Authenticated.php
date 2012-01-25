@@ -31,7 +31,7 @@ use \emberlabs\shot\Model\ModelBase;
  * @license     http://opensource.org/licenses/mit-license.php The MIT License
  * @link        https://github.com/emberlabs/shot/
  */
-class Authenticated 
+class Authenticated
 	extends Standard
 {
 	public $user, $group;

@@ -29,7 +29,7 @@ namespace emberlabs\shot\Model;
  * @license     http://opensource.org/licenses/mit-license.php The MIT License
  * @link        https://github.com/emberlabs/shot/
  */
-abstract class ModelBase 
+abstract class ModelBase
 	implements ModelInterface
 {
 	protected $id, $data, $pending;
@@ -78,6 +78,8 @@ abstract class ModelBase
 	{
 		return (!empty($this->pending)) ? true : false;
 	}
+
+	abstract public function create();
 
 	abstract public function load();
 

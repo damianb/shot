@@ -19,8 +19,8 @@
  */
 
 namespace emberlabs\shot\Controller;
-use \emberlabs\shot\Page\Request;
-use \emberlabs\shot\Page\Response;
+use \emberlabs\shot\Request\RequestInterface;
+use \emberlabs\shot\Response\ResponseInterface;
 use \OpenFlame\Framework\Route\RouteInstance;
 
 /**
@@ -34,19 +34,12 @@ use \OpenFlame\Framework\Route\RouteInstance;
  */
 interface ControllerInterface
 {
-	public function __construct(Request $request);
-
+	public function __construct(RequestInterface $request);
 	public function getName();
-
 	public function setName($name);
-
 	public function getRequiredAuths();
-
 	public function setRequiredAuths(array $auths);
-
 	public function before();
-
 	public function runController();
-
-	public function after(Response $response);
+	public function after(ResponseInterface $response);
 }

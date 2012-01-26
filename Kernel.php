@@ -25,8 +25,8 @@ use \OpenFlame\Framework\Event\Dispatcher;
 use \OpenFlame\Framework\Event\Instance as Event;
 
 /**
- * Shot - Web Kernel
- * 	     Provides shortcuts to commonly used web functionality.
+ * Shot - Framework Kernel
+ * 	     Provides shortcuts to commonly used functionality.
  *
  * @package     shot
  * @author      emberlabs.org
@@ -44,7 +44,7 @@ class Kernel extends Core
 
 	protected static $init = false;
 
-	protected static $dispatcher, $injector, $app_seed, $session_seed, $base_path;
+	protected static $dispatcher, $injector;
 
 	protected static function _init()
 	{
@@ -114,35 +114,5 @@ class Kernel extends Core
 				self::trigger($event);
 			}
 		}
-	}
-
-	public static function getBasePath()
-	{
-		// asdf
-	}
-
-	public static function setBasePath($path)
-	{
-		// asdf
-	}
-
-	public static function getApplicationSeed()
-	{
-		// asdf
-	}
-
-	public static function setApplicationSeed($seed)
-	{
-		// asdf
-	}
-
-	public static function getSessionSeed()
-	{
-		// asdf
-	}
-
-	public static function setSessionSeed($seed)
-	{
-		// asdf
 	}
 }

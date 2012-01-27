@@ -33,7 +33,7 @@ use \emberlabs\shot\Kernel;
 class Standard
 	implements ResponseInterface
 {
-	protected $t_vars, $content_type, $headers, $template;
+	protected $t_vars, $content_type, $headers, $body, $use_templating;
 
 	protected $response = 200;
 
@@ -47,7 +47,8 @@ class Standard
 
 	public function __construct()
 	{
-		$this->setContentType('plain');
+		$this->setContentType('html');
+		$this->enableTemplating();
 	}
 
 	public function getContentType()
@@ -98,14 +99,33 @@ class Standard
 		return $this;
 	}
 
-	public function getTemplate()
+	public function isUsingTemplating()
 	{
-		return $this->template;
+		return $this->use_templating;
 	}
 
-	public function setTemplate($template)
+	public function enableTemplating()
 	{
-		$this->template = (string) $template;
+		$this->use_templating = true;
+
+		return $this;
+	}
+
+	public function disableTemplating()
+	{
+		$this->use_templating = false;
+
+		return $this;
+	}
+
+	public function getBody()
+	{
+		return $this->body;
+	}
+
+	public function setBody($body)
+	{
+		$this->body = (string) $body;
 
 		return $this;
 	}

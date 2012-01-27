@@ -33,9 +33,22 @@ if(!defined('SHOT_INCLUDE_ROOT'))
 {
 	die('Required constant "SHOT_INCLUDE_ROOT" not defined');
 }
-if(!defined('SHOT_DEBUG'))
+if(!defined('SHOT_ROOT'))
 {
-	define('SHOT_DEBUG', false);
+	die('Required constant "SHOT_ROOT" not defined');
+}
+
+// defaults
+$_defaults = array(
+	'SHOT_DEBUG' => false,
+	'SHOT_CONFIG_PATH' => SHOT_ROOT . 'config/',
+);
+foreach($_defaults as $_const => $_default)
+{
+	if(!defined($_const))
+	{
+		define($_const, $_default)
+	}
 }
 
 // set up autoloader
@@ -104,4 +117,7 @@ if(!SHOT_DEBUG)
 	ExceptionHandler::disableDebug();
 }
 
-unset($_e_reporting);
+unset($_e_reporting, $_defaults, $_const, $_default);
+
+
+

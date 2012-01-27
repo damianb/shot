@@ -19,10 +19,13 @@
  */
 
 namespace emberlabs\shot;
-use \emberlabs\shot\Kernel;
+use \emberlabs\shot\Request\Standard as StandardRequest;
+use \emberlabs\shot\Request\Authenticated as AuthenticatedRequest;
+use \emberlabs\shot\Response\HTTP as HTTPResponse;
+use \OpenFlame\Framework\Core\Core;
 use \OpenFlame\Framework\Core\DependencyInjector;
-use \OpenFlame\Framework\Event\Dispatcher;
-use \OpenFlame\Framework\Event\Instance as Event;
+use \OpenFlame\Framework\Utility\JSON;
+use \ArrayAccess;
 
 /**
  * Shot - Web Kernel
@@ -34,47 +37,97 @@ use \OpenFlame\Framework\Event\Instance as Event;
  * @link        https://github.com/emberlabs/shot/
  */
 class WebKernel
+	extends Core
 	implements ArrayAccess
 {
-	protected $app_seed, $session_seed, $base_path, $request, $response;
+	private static $version = '1.0.0-dev';
+
+	protected $injector, $app_seed, $session_seed, $base_path, $request, $response;
+
+	protected static $instances = array();
+
+	public static function getInstance($instance = NULL)
+	{
+		if($instance === NULL)
+		{
+			$instance = 'default';
+		}
+		else
+		{
+			$instance = '_' . $instance;
+		}
+
+		if(!isset(self::$instances[$instance]))
+		{
+			self::$instances[$instance]] = new self();
+		}
+
+		return self::$instances[$instance]];
+	}
+
+	public function __construct()
+	{
+		$this->injector = DependencyInjector::getInstance();
+		$this->request = new StandardRequest();
+		$this->response = new HTTPResponse();
+	}
+
+	public function getVersion()
+	{
+		return self::$version;
+	}
+
+	public function getFrameworkVersion()
+	{
+		return parent::getVersion();
+	}
 
 	/**
 	 * Settings and stuff
 	 */
 
-	public function getVersion()
-	{
-		return Kernel::VERSION;
-	}
-
 	public function getBasePath()
 	{
-		// asdf
+		return $this->base_path;
 	}
 
 	public function setBasePath($path)
 	{
-		// asdf
+		$this->base_path = $path;
+
+		$this->router->setBaseURL($path);
+		$this->asset->setBaseURL($path);
+		$this->url->setBaseURL($path);
+
+		return $this;
 	}
 
 	public function getApplicationSeed()
 	{
-		// asdf
+		return $this->app_seed;
 	}
 
 	public function setApplicationSeed($seed)
 	{
-		// asdf
+		$this->app_seed = $seed;
+		$this->seeder->setApplicationSeed($seed);
+		$this->form->setFormSeed($seed . '.' . $this->getSessionSeed());
+
+		return $this;
 	}
 
 	public function getSessionSeed()
 	{
-		// asdf
+		return $this->session_seed;
 	}
 
 	public function setSessionSeed($seed)
 	{
-		// asdf
+		$this->session_seed = $seed;
+		$this->seeder->setSessionSeed($seed);
+		$this->form->setFormSeed($this->getApplicationSeed() . '.' . $seed);
+
+		return $this;
 	}
 
 	/**
@@ -83,7 +136,66 @@ class WebKernel
 
 	public function boot()
 	{
-		// asdf
+		$config = JSON::decode(file_get_contents(SHOT_CONFIG_PATH . 'config.json'));
+		foreach($config as $_k => $_v)
+		{
+			$this->offsetSet($_k, $_v);
+		}
+
+		// load extra config files
+		if($this->offsetExists('shot.config.files'))
+		{
+			foreach($this->offsetGet('shot.config.files') as $file)
+			{
+				if(!file_exists(SHOT_CONFIG_PATH . basename($file, '.json') . '.json'))
+				{
+					continue;
+				}
+
+				$config = JSON::decode(file_get_contents(SHOT_CONFIG_PATH . basename($file, '.json') . '.json');
+				foreach($config as $_k => $_v)
+				{
+					$this->offsetSet($_k, $_v);
+				}
+			}
+		}
+		unset($config);
+
+		// load language entries
+		if($this->offsetExists('shot.language.entries'))
+		{
+			$this->language->loadEntries($this->offsetGet('shot.language.entries'));
+		}
+
+		// snag headers
+		$this->header->snagHeaders();
+
+		// load routes
+		if($this->offsetExists('shot.routes.entries'))
+		{
+			if($this->cache->dataCached('shot_routes'))
+			{
+				$this->router->loadFromFullRouteCache($this->cache->loadData('shot_routes'));
+			}
+			else
+			{
+				// Define routes
+				$routes = $this->offsetGet('shot.routes.entries');
+
+				$this->router->newRoutes($routes);
+
+				$home = $this->router->newRoute($routes['home']['path'], $routes['home']['callback']);
+				$this->router->storeRoute($home)
+					->setHomeRoute($home);
+
+				$error = $this->router->newRoute($routes['error']['path'], $routes['error']['callback']);
+				$this->router->storeRoute($error)
+					->setErrorRoute($error);
+
+				$this->cache->storeData('shot_routes', $this->router->getFullRouteCache());
+			}
+		}
+		unset($routes, $home, $error);
 	}
 
 	public function run()
@@ -93,7 +205,61 @@ class WebKernel
 
 	public function display()
 	{
-		// asdf
+		try
+		{
+			ob_start();
+			if($this->response->usingTemplates())
+			{
+				// load assets
+				if($this->offsetExists('shot.assets.entries'))
+				{
+					foreach($this->offsetGet('shot.assets.entries') as $type => $_assets)
+					{
+						foreach($_assets as $asset_name => $asset_url)
+						{
+							$this->asset->registerCustomAsset($type, $asset_name)
+								->setURL($asset_path . '/' . $type . '/' . $asset_url);
+						}
+					}
+				}
+
+				// load urls
+				if($this->offsetExists('shot.urls.entries'))
+				{
+					foreach($this->offsetGet('shot.urls.entries') as $name => $pattern)
+					{
+						$this->url->newPattern($name, $pattern);
+					}
+				}
+
+				// prepare twig
+				$twig_env = $this->twig->getTwigEnvironment();
+				$twig_env->addGlobal('timer', $this->timer);
+				$twig_env->addGlobal('asset', $this->asset_proxy);
+				$twig_env->addGlobal('language', $this->language_proxy);
+				$twig_env->addGlobal('url', $this->url_proxy);
+
+				$twig_page = $twig_env->loadTemplate($this->response->getBody());
+
+				$body = $twig_page->render($this->response->getTemplateVars());
+			}
+			else
+			{
+				$body = $this->response->getBody();
+			}
+
+			echo $body;
+
+			// Set our content-length header, and send all headers.
+			$this->header->setHeader('Content-Length', ob_get_length());
+			$this->header->sendHeaders();
+			ob_end_flush()
+		}
+		catch(\Exception $e)
+		{
+			ob_clean();
+			throw $e;
+		}
 	}
 
 	public function shutdown()
@@ -107,12 +273,12 @@ class WebKernel
 
 	public function __get($field)
 	{
-		return Kernel::getObject($field);
+		return $this->injector->get($field);
 	}
 
 	public function __isset($field)
 	{
-		return (Kernel::getObject($field) !== NULL) ? true : false;
+		return (parent::getObject($field) !== NULL) ? true : false;
 	}
 
 	public function __set($field, $value)
@@ -122,12 +288,12 @@ class WebKernel
 			return;
 		}
 
-		Kernel::setObject($field);
+		parent::setObject($field);
 	}
 
 	public function __toString()
 	{
-		return Kernel::VERSION;
+		return self::VERSION;
 	}
 
 	/**
@@ -135,21 +301,21 @@ class WebKernel
 	 */
 	public function offsetExists($offset)
 	{
-		return (Kernel::getConfig($offset) !== NULL) ? true : false;
+		return (parent::getConfig($offset) !== NULL) ? true : false;
 	}
 
 	public function offsetGet($offset)
 	{
-		return Kernel::getConfig($offset);
+		return parent::getConfig($offset);
 	}
 
 	public function offsetSet($offset, $value)
 	{
-		Kernel::setConfig($offset, $value);
+		parent::setConfig($offset, $value);
 	}
 
 	public function offsetUnset($offset)
 	{
-		Kernel::setConfig($offset, NULL);
+		parent::setConfig($offset, NULL);
 	}
 }

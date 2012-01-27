@@ -33,9 +33,10 @@ use \OpenFlame\Framework\Event\Instance as Event;
  * @license     http://opensource.org/licenses/mit-license.php The MIT License
  * @link        https://github.com/emberlabs/shot/
  */
-class Kernel extends Core
+class Kernel
+	extends Core
 {
-	const VERSION = '1.0.0-dev';
+	private static $version = '1.0.0-dev';
 
 	const TRIGGER_NOBREAK = 1;
 	const TRIGGER_MANUALBREAK = 2;
@@ -45,6 +46,16 @@ class Kernel extends Core
 	protected static $init = false;
 
 	protected static $dispatcher, $injector;
+
+	public function getVersion()
+	{
+		return self::$version;
+	}
+
+	public function getFrameworkVersion()
+	{
+		return parent::getVersion();
+	}
 
 	protected static function _init()
 	{

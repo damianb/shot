@@ -1,0 +1,71 @@
+@import "import.less";
+
+@fonts: "Droid Sans";
+@monofonts: "Droid Sans Mono", monospace;
+
+body {
+	font-family: @fonts;
+}
+
+header {
+    background-color: lighten(@grayLighter, 8);
+
+    #gradient > .vertical(darken(@gray, 9), @gray);
+    border-bottom: 1px solid darken(@gray, 25);
+
+	padding: 23px 0;
+
+	h2 {
+        color: @white;
+		font-size: 32px;
+		//font-variant: small-caps;
+	}
+}
+
+.errdetails {
+	#gradient > .vertical(lighten(@grayLighter, 3), lighten(@grayLighter, 8));
+    //border-top: 1px solid darken(@grayLight, 3);
+    border-bottom: 1px solid darken(@grayLight, 3);
+	padding-top: 20px;
+}
+
+.errcontext, .errtrace {
+	padding-top: 15px;
+	background: @white;
+}
+
+body .well {
+	margin-left: 10px;
+	margin-right: 10px;
+
+	padding-top: 10px;
+	padding-bottom: 5px;
+	.details {
+		font-family: @monofonts;
+		blockquote {
+			margin-top: 4px;
+		}
+		blockquote p {
+			font-style: italic;
+		}
+	}
+}
+.context {
+	font-family: @monofonts;
+	background: darken(@white, 1);
+	font-size: 12px;
+	.code {
+		overflow:auto;
+	}
+}
+
+//body,
+footer {
+//	background: @grayDark;
+	h4 {
+		font-size: 13px;
+	}
+	p {
+		font-size: 10px;
+	}
+}

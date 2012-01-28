@@ -29,6 +29,8 @@ use \OpenFlame\Dbal\Connection as DbalConnection;
 // get error reporting stuff
 $_e_reporting = @error_reporting();
 
+define('SHOT_LOAD_START', microtime(true));
+
 if(!defined('SHOT_INCLUDE_ROOT'))
 {
 	die('Required constant "SHOT_INCLUDE_ROOT" not defined');
@@ -47,7 +49,7 @@ foreach($_defaults as $_const => $_default)
 {
 	if(!defined($_const))
 	{
-		define($_const, $_default)
+		define($_const, $_default);
 	}
 }
 
@@ -118,6 +120,3 @@ if(!SHOT_DEBUG)
 }
 
 unset($_e_reporting, $_defaults, $_const, $_default);
-
-
-

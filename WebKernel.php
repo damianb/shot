@@ -59,10 +59,10 @@ class WebKernel
 
 		if(!isset(self::$instances[$instance]))
 		{
-			self::$instances[$instance]] = new self();
+			self::$instances[$instance] = new self();
 		}
 
-		return self::$instances[$instance]];
+		return self::$instances[$instance];
 	}
 
 	public function __construct()
@@ -80,6 +80,11 @@ class WebKernel
 	public function getFrameworkVersion()
 	{
 		return parent::getVersion();
+	}
+
+	public function __toString()
+	{
+		return sprintf('shot v%s && of-f v%s', $this->getVersion(), $this->getFrameworkVersion());
 	}
 
 	/**
@@ -152,7 +157,7 @@ class WebKernel
 					continue;
 				}
 
-				$config = JSON::decode(file_get_contents(SHOT_CONFIG_PATH . basename($file, '.json') . '.json');
+				$config = JSON::decode(file_get_contents(SHOT_CONFIG_PATH . basename($file, '.json') . '.json'));
 				foreach($config as $_k => $_v)
 				{
 					$this->offsetSet($_k, $_v);
@@ -200,7 +205,46 @@ class WebKernel
 
 	public function run()
 	{
-		// asdf
+		$_SERVER; // have to poke the _SERVER superglobal for it to be usable in $_GLOBALS sometimes. possible php bug, idk.
+
+		$request = $this->input->getInput('SERVER::REQUEST_URI', '/');
+		if(!$request->wasSet())
+		{
+			$request = $this->input->getInput('REQUEST::QUERY_URI', '/');
+		}
+
+		$uri = $request->getClean();
+
+		try {
+			$route = $this->router->processRequest($uri);
+
+			$this->request->setURI($uri)
+				->setRoute($route);
+
+			$controller = $route->getController();
+			$this->controller = $controller;
+
+			$controller->before();
+			$response = $controller->runController();
+			$controller->after($response);
+		}
+		catch(RedirectException $e)
+		{
+			$event = Event::newEvent('shot.server.redirect')
+				->set('location', $e->getMessage())
+				->set('uri', $uri);
+
+			Kernel::_trigger($event);
+		}
+		catch(ServerException $e)
+		{
+			$event = Event::newEvent('shot.server.error')
+				->set('message', $e->getMessage())
+				->set('code', $e->getCode())
+				->set('uri', $uri);
+
+			Kernel::_trigger($event, Kernel::TRIGGER_MIXEDBREAK);
+		}
 	}
 
 	public function display()
@@ -253,7 +297,7 @@ class WebKernel
 			// Set our content-length header, and send all headers.
 			$this->header->setHeader('Content-Length', ob_get_length());
 			$this->header->sendHeaders();
-			ob_end_flush()
+			ob_end_flush();
 		}
 		catch(\Exception $e)
 		{
@@ -289,11 +333,6 @@ class WebKernel
 		}
 
 		parent::setObject($field);
-	}
-
-	public function __toString()
-	{
-		return self::VERSION;
 	}
 
 	/**

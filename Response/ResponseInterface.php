@@ -38,7 +38,7 @@ interface ResponseInterface
 	public function setHeader($header, $value);
 	public function setHeaders(array $headers);
 	public function getBody();
-	public function setBody($body)
+	public function setBody($body);
 	public function getResponseCode();
 	public function setResponseCode($code = 200);
 	public function display();

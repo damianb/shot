@@ -20,33 +20,3 @@
 
 namespace emberlabs\shot\Runtime;
 use \emberlabs\shot\Kernel;
-
-function getBasePath()
-{
-	// asdf
-}
-
-function setBasePath()
-{
-	// asdf
-}
-
-function getApplicationSeed()
-{
-	// asdf
-}
-
-function setApplicationSeed()
-{
-	// asdf
-}
-
-function getSessionSeed()
-{
-	// asdf
-}
-
-function setSessionSeed()
-{
-	// asdf
-}

@@ -1,4 +1,4 @@
-@import "import.less";
+@import "assets/less/bootstrap.less";
 
 @fonts: "Droid Sans";
 @monofonts: "Droid Sans Mono", monospace;
@@ -8,48 +8,78 @@ body {
 }
 
 header {
-    background-color: lighten(@grayLighter, 8);
+    //background-color: lighten(@grayLighter, 8);
 
-    #gradient > .vertical(darken(@gray, 9), @gray);
+    #gradient > .vertical(darken(@gray, 12), @gray);
+	text-shadow: 0px -1px 2px darken(@white, 30);
     border-bottom: 1px solid darken(@gray, 25);
 
-	padding: 23px 0;
+	padding: 20px 0;
 
 	h2 {
         color: @white;
 		font-size: 32px;
-		//font-variant: small-caps;
 	}
 }
 
 .errdetails {
-	#gradient > .vertical(lighten(@grayLighter, 3), lighten(@grayLighter, 8));
-    //border-top: 1px solid darken(@grayLight, 3);
-    border-bottom: 1px solid darken(@grayLight, 3);
-	padding-top: 20px;
+	margin-top: 74px;
+	#gradient > .vertical(lighten(@grayLight, 25), lighten(@grayLighter, 8));
+    //border-bottom: 1px solid darken(@grayLight, -1);
+	padding-top: 12px;
 }
 
 .errcontext, .errtrace {
-	padding-top: 15px;
-	background: @white;
+	padding-top: 8px;
+}
+
+.syntaxbg {
+	color: #FFFFFF;
+}
+.syntaxcomment {
+	color: #FF8000;
+}
+.syntaxdefault {
+	color: #0000BB;
+}
+.syntaxhtml {
+	color: #000000;
+}
+.syntaxkeyword {
+	color: #007700;
+}
+.syntaxstring {
+	color: #DD0000;
 }
 
 body .well {
-	margin-left: 10px;
-	margin-right: 10px;
+	//margin-left: 10px;
+	//margin-right: 10px;
 
 	padding-top: 10px;
 	padding-bottom: 5px;
+	border-color: lighten(@grayLight, 20);
 	.details {
 		font-family: @monofonts;
 		blockquote {
 			margin-top: 4px;
 		}
 		blockquote p {
+			font-family: @monofonts;
+			font-size: 13px;
 			font-style: italic;
 		}
 	}
 }
+
+.errtrace table, body .well {
+	margin-top: 10px;
+}
+
+.errtrace table td.stackcall {
+	font-family: @monofonts;
+}
+
 .context {
 	font-family: @monofonts;
 	background: darken(@white, 1);
@@ -62,6 +92,10 @@ body .well {
 //body,
 footer {
 //	background: @grayDark;
+	//margin-top: 5px;
+	padding-bottom: 25px;
+	padding-top: 25px;
+	border-top: 1px solid lighten(@grayLight, 30);
 	h4 {
 		font-size: 13px;
 	}

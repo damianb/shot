@@ -42,8 +42,10 @@ if(!defined('SHOT_ROOT'))
 
 // defaults
 $_defaults = array(
-	'SHOT_DEBUG' => false,
-	'SHOT_CONFIG_PATH' => SHOT_ROOT . 'config/',
+	'SHOT_DEBUG'					=> false,
+	'SHOT_DEBUG_SHOW_CONTEXT'		=> false,
+	'SHOT_DEBUG_UNWRAP'				=> 0,
+	'SHOT_CONFIG_PATH'				=> SHOT_ROOT . 'config/',
 );
 foreach($_defaults as $_const => $_default)
 {

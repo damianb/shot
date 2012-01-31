@@ -82,6 +82,11 @@ class WebKernel
 		return parent::getVersion();
 	}
 
+	public static function version()
+	{
+		return sprintf('shot v%s && of-f v%s', self::$version, parent::getVersion());
+	}
+
 	public function __toString()
 	{
 		return sprintf('shot v%s && of-f v%s', $this->getVersion(), $this->getFrameworkVersion());
@@ -215,36 +220,17 @@ class WebKernel
 
 		$uri = $request->getClean();
 
-		try {
-			$route = $this->router->processRequest($uri);
+		$route = $this->router->processRequest($uri);
 
-			$this->request->setURI($uri)
-				->setRoute($route);
+		$this->request->setURI($uri)
+			->setRoute($route);
 
-			$controller = $route->getController();
-			$this->controller = $controller;
+		$controller = $route->getController();
+		$this->controller = $controller;
 
-			$controller->before();
-			$response = $controller->runController();
-			$controller->after($response);
-		}
-		catch(RedirectException $e)
-		{
-			$event = Event::newEvent('shot.server.redirect')
-				->set('location', $e->getMessage())
-				->set('uri', $uri);
-
-			Kernel::_trigger($event);
-		}
-		catch(ServerException $e)
-		{
-			$event = Event::newEvent('shot.server.error')
-				->set('message', $e->getMessage())
-				->set('code', $e->getCode())
-				->set('uri', $uri);
-
-			Kernel::_trigger($event, Kernel::TRIGGER_MIXEDBREAK);
-		}
+		$controller->before();
+		$this->response = $controller->runController();
+		$controller->after($this->response);
 	}
 
 	public function display()
@@ -306,10 +292,7 @@ class WebKernel
 		}
 	}
 
-	public function shutdown()
-	{
-		// asdf
-	}
+	public function shutdown() { }
 
 	/**
 	 * Magic methods

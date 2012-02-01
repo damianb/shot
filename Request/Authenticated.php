@@ -19,7 +19,7 @@
  */
 
 namespace emberlabs\shot\Request;
-use \emberlabs\shot\Kernel;
+use \emberlabs\shot\WebKernel;
 use \emberlabs\shot\Model\ModelBase;
 
 /**
@@ -35,7 +35,7 @@ class Authenticated
 	extends Standard
 {
 	public $user, $group;
-	
+
 	protected $user_id, $group_id;
 
 	public function __construct(ModelBase $user, ModelBase $group = NULL)
@@ -47,7 +47,7 @@ class Authenticated
 			$this->group = $group;
 			$this->group_id = $group->getID();
 		}
-		
+
 		$this->user = $user;
 		$this->user_id = $user->getID();
 	}
@@ -64,7 +64,8 @@ class Authenticated
 
 	public function auth($auth)
 	{
-		return Kernel::get('acl')->check($this->group_id, $auth);
+		$kernel = WebKernel::getInstance();
+		return $kernel->acl->check($this->group_id, $auth);
 	}
 
 	public function isAuthenticated()

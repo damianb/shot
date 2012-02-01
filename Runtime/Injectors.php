@@ -20,9 +20,9 @@
 
 namespace emberlabs\shot\Runtime;
 use \emberlabs\shot\Kernel;
-use \OpenFlame\Framework\Core\DependencyInjector;
-use \OpenFlame\Framework\Exception\EncryptedHandler as ExceptionHandler;
-use \OpenFlame\Framework\Utility\JSON;
+use \emberlabs\openflame\Core\DependencyInjector;
+use \emberlabs\openflame\Core\Utility\JSON;
+use \emberlabs\openflame\Exception\EncryptedHandler as ExceptionHandler;
 use \OpenFlame\Dbal\Connection as DbalConnection;
 use \OpenFlame\Dbal\Query;
 use \OpenFlame\Dbal\QueryBuilder;

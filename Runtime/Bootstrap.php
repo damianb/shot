@@ -20,10 +20,10 @@
 
 namespace emberlabs\shot\Runtime;
 use \emberlabs\shot\Kernel;
-use \OpenFlame\Framework\Core\Autoloader;
-use \OpenFlame\Framework\Core\Internal\RequirementException;
-use \OpenFlame\Framework\Exception\EncryptedHandler as ExceptionHandler;
-use \OpenFlame\Framework\Utility\JSON;
+use \emberlabs\openflame\Core\Autoloader;
+use \emberlabs\openflame\Core\Internal\RequirementException;
+use \emberlabs\openflame\Core\Utility\JSON;
+use \emberlabs\openflame\Exception\EncryptedHandler as ExceptionHandler;
 use \OpenFlame\Dbal\Connection as DbalConnection;
 
 // get error reporting stuff
@@ -56,7 +56,7 @@ foreach($_defaults as $_const => $_default)
 }
 
 // set up autoloader
-require SHOT_INCLUDE_ROOT . 'OpenFlame/Framework/Core/Autoloader.php';
+require SHOT_INCLUDE_ROOT . 'emberlabs/openflame/Core/Autoloader.php';
 Autoloader::register(SHOT_INCLUDE_ROOT);
 
 // register the exception handler

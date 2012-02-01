@@ -19,8 +19,8 @@
  */
 
 namespace emberlabs\shot\Request;
-use \emberlabs\shot\Kernel;
-use \OpenFlame\Framework\Route\RouteInstance;
+use \emberlabs\shot\WebKernel;
+use \emberlabs\openflame\Route\RouteInstance;
 
 /**
  * Shot - Standard request object
@@ -38,12 +38,12 @@ class Standard
 
 	public function __construct()
 	{
-		$input = Kernel::get('input');
-		
-		$this->method = $input->get('SERVER::REQUEST_METHOD', 'GET')->getClean();
-		$this->referer = $input->get('SERVER::HTTP_REFERER', '-')->getClean();
-		$this->useragent = $input->get('SERVER::HTTP_USER_AGENT', '-')->getClean();
-		$this->ip = $input->get('SERVER::REMOTE_ADDR', '127.0.0.1')->getClean();
+		$kernel = WebKernel::getInstance();
+
+		$this->method = $kernel->input->get('SERVER::REQUEST_METHOD', 'GET')->getClean();
+		$this->referer = $kernel->input->get('SERVER::HTTP_REFERER', '-')->getClean();
+		$this->useragent = $kernel->input->get('SERVER::HTTP_USER_AGENT', '-')->getClean();
+		$this->ip = $kernel->input->get('SERVER::REMOTE_ADDR', '127.0.0.1')->getClean();
 	}
 
 	public function getMethod()
@@ -92,7 +92,8 @@ class Standard
 
 	public function getInput($input, $default = '')
 	{
-		return Kernel::get('input')->getInput($input, $default)->getClean();
+		$kernel = WebKernel::getInstance();
+		return $kernel->input->getInput($input, $default)->getClean();
 	}
 
 	public function isAuthenticated()

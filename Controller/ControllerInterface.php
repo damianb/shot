@@ -21,7 +21,7 @@
 namespace emberlabs\shot\Controller;
 use \emberlabs\shot\Request\RequestInterface;
 use \emberlabs\shot\Response\ResponseInterface;
-use \OpenFlame\Framework\Route\RouteInstance;
+use \emberlabs\openflame\Route\RouteInstance;
 
 /**
  * Shot - Controller interface

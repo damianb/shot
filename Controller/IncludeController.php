@@ -23,7 +23,7 @@ use \emberlabs\shot\Kernel;
 use \emberlabs\shot\Request\RequestInterface;
 use \emberlabs\shot\Response\HTTP as HTTPResponse;
 use \emberlabs\shot\Response\ResponseInterface;
-use \OpenFlame\Framework\Core\Internal\FileException;
+use \emberlabs\openflame\Core\Internal\FileException;
 
 /**
  * Shot - Include Controller

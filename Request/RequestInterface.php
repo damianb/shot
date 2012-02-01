@@ -21,7 +21,7 @@
 namespace emberlabs\shot\Request;
 use \emberlabs\shot\Kernel;
 use \emberlabs\shot\Model\ModelBase;
-use \OpenFlame\Framework\Route\RouteInstance;
+use \emberlabs\openflame\Route\RouteInstance;
 
 /**
  * Shot - Request interface

@@ -22,9 +22,9 @@ namespace emberlabs\shot;
 use \emberlabs\shot\Request\Standard as StandardRequest;
 use \emberlabs\shot\Request\Authenticated as AuthenticatedRequest;
 use \emberlabs\shot\Response\HTTP as HTTPResponse;
-use \OpenFlame\Framework\Core\Core;
-use \OpenFlame\Framework\Core\DependencyInjector;
-use \OpenFlame\Framework\Utility\JSON;
+use \emberlabs\openflame\Core\Core;
+use \emberlabs\openflame\Core\DependencyInjector;
+use \emberlabs\openflame\Core\Utility\JSON;
 use \ArrayAccess;
 
 /**

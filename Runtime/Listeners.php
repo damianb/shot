@@ -21,10 +21,10 @@
 namespace emberlabs\shot\Runtime;
 use \emberlabs\shot\Kernel;
 use \emberlabs\shot\Page\Request;
-use \OpenFlame\Framework\Core\Autoloader;
-use \OpenFlame\Framework\Event\Instance as Event;
-use \OpenFlame\Framework\Exception\EncryptedHandler as ExceptionHandler;
-use \OpenFlame\Framework\Utility\JSON;
+use \emberlabs\openflame\Core\Autoloader;
+use \emberlabs\openflame\Core\Utility\JSON;
+use \emberlabs\openflame\Event\Instance as Event;
+use \emberlabs\openflame\Exception\EncryptedHandler as ExceptionHandler;
 
 /**
  * page preparation listeners

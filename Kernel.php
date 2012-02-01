@@ -19,10 +19,10 @@
  */
 
 namespace emberlabs\shot;
-use \OpenFlame\Framework\Core\Core;
-use \OpenFlame\Framework\Core\DependencyInjector;
-use \OpenFlame\Framework\Event\Dispatcher;
-use \OpenFlame\Framework\Event\Instance as Event;
+use \emberlabs\openflame\Core\Core;
+use \emberlabs\openflame\Core\DependencyInjector;
+use \emberlabs\openflame\Event\Dispatcher;
+use \emberlabs\openflame\Event\Instance as Event;
 
 /**
  * Shot - Framework Kernel

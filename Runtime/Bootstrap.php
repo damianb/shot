@@ -59,6 +59,7 @@ foreach($_defaults as $_const => $_default)
 require SHOT_INCLUDE_ROOT . 'emberlabs/openflame/Core/Autoloader.php';
 Autoloader::register(SHOT_INCLUDE_ROOT);
 
+/*
 // register the exception handler
 ExceptionHandler::register();
 
@@ -88,11 +89,12 @@ ExceptionHandler::setPageFormat('
 		</footer>
 	</body>
 </html>');
+*/
 
 // Force full debug on here
 @error_reporting(E_ALL);
 @ini_set("display_errors", "On");
-ExceptionHandler::enableDebug();
+//ExceptionHandler::enableDebug();
 
 // check for blocking requirements
 if(@ini_get('register_globals'))
@@ -109,16 +111,16 @@ if(@get_magic_quotes_runtime())
 }
 
 // load special runtime files
-require SHOT_INCLUDE_ROOT . 'emberlabs/shot/Runtime/Functions.php';
+//require SHOT_INCLUDE_ROOT . 'emberlabs/shot/Runtime/Functions.php';
 require SHOT_INCLUDE_ROOT . 'emberlabs/shot/Runtime/Injectors.php';
-require SHOT_INCLUDE_ROOT . 'emberlabs/shot/Runtime/Listeners.php';
+//require SHOT_INCLUDE_ROOT . 'emberlabs/shot/Runtime/Listeners.php';
 
 // do we leave debug on, or...
 if(!SHOT_DEBUG)
 {
 	@error_reporting($_e_reporting);
 	@ini_set("display_errors", "Off");
-	ExceptionHandler::disableDebug();
+	//ExceptionHandler::disableDebug();
 }
 
 unset($_e_reporting, $_defaults, $_const, $_default);

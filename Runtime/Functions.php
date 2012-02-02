@@ -19,4 +19,3 @@
  */
 
 namespace emberlabs\shot\Runtime;
-use \emberlabs\shot\Kernel;

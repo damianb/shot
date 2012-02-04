@@ -34,12 +34,12 @@ use \emberlabs\openflame\Route\RouteInstance;
  */
 interface ControllerInterface
 {
-	public function __construct(RequestInterface $request);
+	public function __construct(RequestInterface $request, ResponseInterface $response);
 	public function getName();
 	public function setName($name);
 	public function getRequiredAuths();
 	public function setRequiredAuths(array $auths);
 	public function before();
 	public function runController();
-	public function after(ResponseInterface $response);
+	public function after();
 }

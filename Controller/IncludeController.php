@@ -39,9 +39,10 @@ class IncludeController
 {
 	protected $request, $name, $auths, $include_file, $objects;
 
-	public function __construct(RequestInterface $request)
+	public function __construct(RequestInterface $request, ResponseInterface $response)
 	{
 		$this->request = $request;
+		$this->response = $response;
 	}
 
 	public function getName()
@@ -110,7 +111,7 @@ class IncludeController
 		}
 
 		// Prepare the $response var - the include file can change stuff afterwards itself if it wants.
-		$response = new HTTPResponse();
+		$response = $this->response;
 		$response->setContentType('html');
 
 		$template = array();
@@ -124,8 +125,8 @@ class IncludeController
 		return $response;
 	}
 
-	public function after(ResponseInterface $response)
+	public function after()
 	{
-		return $response;
+		return $this->response;
 	}
 }

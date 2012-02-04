@@ -36,11 +36,12 @@ use \emberlabs\shot\Response\ResponseInterface;
 abstract class ObjectController
 	implements ControllerInterface
 {
-	protected $request, $name, $auths;
+	protected $request, $response, $name, $auths;
 
-	public function __construct(RequestInterface $request)
+	public function __construct(RequestInterface $request, ResponseInterface $response)
 	{
 		$this->request = $request;
+		$this->response = $response;
 	}
 
 	public function getName()
@@ -69,16 +70,10 @@ abstract class ObjectController
 
 	public function before() { }
 
-	public function runController()
-	{
-		$response = new HTTPResponse();
-		$response->setContentType('html');
+	abstract public function runController();
 
-		return $response;
-	}
-
-	public function after(ResponseInterface $response)
+	public function after()
 	{
-		return $response;
+		return $this->response;
 	}
 }

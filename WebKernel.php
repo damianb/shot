@@ -42,20 +42,15 @@ class WebKernel
 {
 	private static $version = '1.0.0-dev';
 
-	protected $injector, $app_seed, $session_seed, $base_path, $request, $response;
+	protected $injector, $app_seed, $session_seed, $base_path;
+
+	public $request, $response;
 
 	protected static $instances = array();
 
 	public static function getInstance($instance = NULL)
 	{
-		if($instance === NULL)
-		{
-			$instance = 'default';
-		}
-		else
-		{
-			$instance = '_' . $instance;
-		}
+		$instance = ($instance === NULL) ? 'default' : '_' . $instance;
 
 		if(!isset(self::$instances[$instance]))
 		{
@@ -84,12 +79,12 @@ class WebKernel
 
 	public static function version()
 	{
-		return sprintf('shot v%s && of-f v%s', self::$version, parent::getVersion());
+		return sprintf('shot v%s || of-f v%s', self::$version, parent::getVersion());
 	}
 
 	public function __toString()
 	{
-		return sprintf('shot v%s && of-f v%s', $this->getVersion(), $this->getFrameworkVersion());
+		return sprintf('shot v%s || of-f v%s', $this->getVersion(), $this->getFrameworkVersion());
 	}
 
 	/**
@@ -225,12 +220,12 @@ class WebKernel
 		$this->request->setURI($uri)
 			->setRoute($route);
 
-		$controller = $route->getController();
-		$this->controller = $controller;
+		$controller = $this->injector->getInjector($route->getRouteCallback());
+		$this->controller = new $controller($this->request, $this->response);
 
 		$controller->before();
 		$this->response = $controller->runController();
-		$controller->after($this->response);
+		$controller->after();
 	}
 
 	public function display()

@@ -139,9 +139,4 @@ class Standard
 	{
 		$this->response = (int) $code;
 	}
-
-	public function display()
-	{
-		// asdf
-	}
 }

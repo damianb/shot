@@ -40,10 +40,10 @@ class Standard
 	{
 		$kernel = WebKernel::getInstance();
 
-		$this->method = $kernel->input->get('SERVER::REQUEST_METHOD', 'GET')->getClean();
-		$this->referer = $kernel->input->get('SERVER::HTTP_REFERER', '-')->getClean();
-		$this->useragent = $kernel->input->get('SERVER::HTTP_USER_AGENT', '-')->getClean();
-		$this->ip = $kernel->input->get('SERVER::REMOTE_ADDR', '127.0.0.1')->getClean();
+		$this->method = $this->getInput('SERVER::REQUEST_METHOD', 'GET');
+		$this->referer = $this->getInput('SERVER::HTTP_REFERER', '-');
+		$this->useragent = $this->getInput('SERVER::HTTP_USER_AGENT', '-');
+		$this->ip = $this->getInput('SERVER::REMOTE_ADDR', '127.0.0.1');
 	}
 
 	public function getMethod()
@@ -90,7 +90,7 @@ class Standard
 		return $this;
 	}
 
-	public function getInput($input, $default = '')
+	public function getInput($input, $default)
 	{
 		$kernel = WebKernel::getInstance();
 		return $kernel->input->getInput($input, $default)->getClean();

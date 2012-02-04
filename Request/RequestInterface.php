@@ -42,6 +42,6 @@ interface RequestInterface
 	public function setURI($uri);
 	public function getRoute();
 	public function setRoute(RouteInstance $route);
-	public function getInput($input, $default = '');
+	public function getInput($input, $default);
 	public function isAuthenticated();
 }

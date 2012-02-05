@@ -141,7 +141,7 @@ class WebKernel
 
 	public function boot()
 	{
-		$config = JSON::decode(file_get_contents(SHOT_CONFIG_PATH . 'config.json'));
+		$config = JSON::decode(file_get_contents(SHOT_CONFIG_ROOT . '/config.json'));
 		foreach($config as $_k => $_v)
 		{
 			$this->offsetSet($_k, $_v);
@@ -152,12 +152,12 @@ class WebKernel
 		{
 			foreach($this->offsetGet('shot.config.files') as $file)
 			{
-				if(!file_exists(SHOT_CONFIG_PATH . basename($file, '.json') . '.json'))
+				if(!file_exists(SHOT_CONFIG_ROOT . '/' . basename($file, '.json') . '.json'))
 				{
 					continue;
 				}
 
-				$config = JSON::decode(file_get_contents(SHOT_CONFIG_PATH . basename($file, '.json') . '.json'));
+				$config = JSON::decode(file_get_contents(SHOT_CONFIG_ROOT . '/' . basename($file, '.json') . '.json'));
 				foreach($config as $_k => $_v)
 				{
 					$this->offsetSet($_k, $_v);
@@ -305,11 +305,6 @@ class WebKernel
 
 	public function __set($field, $value)
 	{
-		if(!is_object($value))
-		{
-			return;
-		}
-
 		parent::setObject($field);
 	}
 

@@ -19,12 +19,8 @@
  */
 
 namespace emberlabs\shot\Runtime;
-use \emberlabs\shot\Kernel;
 use \emberlabs\openflame\Core\Autoloader;
 use \emberlabs\openflame\Core\Internal\RequirementException;
-use \emberlabs\openflame\Core\Utility\JSON;
-use \emberlabs\openflame\Exception\EncryptedHandler as ExceptionHandler;
-use \OpenFlame\Dbal\Connection as DbalConnection;
 
 // get error reporting stuff
 $_e_reporting = @error_reporting();

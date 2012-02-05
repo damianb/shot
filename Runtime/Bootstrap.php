@@ -38,10 +38,19 @@ if(!defined('SHOT_ROOT'))
 
 // defaults
 $_defaults = array(
+	'SHOT_IN_PHAR'					=> false,
+
 	'SHOT_DEBUG'					=> false,
 	'SHOT_DEBUG_SHOW_CONTEXT'		=> false,
 	'SHOT_DEBUG_UNWRAP'				=> 0,
-	'SHOT_CONFIG_PATH'				=> SHOT_ROOT . 'config/',
+
+	'SHOT_CONFIG_ROOT'				=> SHOT_ROOT . '/config',
+	'SHOT_LANGUAGE_ROOT'			=> SHOT_ROOT . '/app/language',
+	'SHOT_LIB_ROOT'					=> SHOT_ROOT . '/app/lib',
+	'SHOT_VENDOR_ROOT'				=> SHOT_ROOT . '/app/vendor',
+	'SHOT_VIEW_ROOT'				=> SHOT_ROOT . '/app/views',
+
+	'SHOT_CORE_PHAR'				=> 'shot.phar',
 );
 foreach($_defaults as $_const => $_default)
 {
@@ -50,10 +59,11 @@ foreach($_defaults as $_const => $_default)
 		define($_const, $_default);
 	}
 }
+define('_SHOT_MAGIC_LOAD_DIR', (!SHOT_IN_PHAR) ? SHOT_INCLUDE_ROOT : sprintf('phar://%s/%s.phar', SHOT_LIB_ROOT, SHOT_CORE_PHAR));
 
 // set up autoloader
-require SHOT_INCLUDE_ROOT . 'emberlabs/openflame/Core/Autoloader.php';
-Autoloader::register(SHOT_INCLUDE_ROOT);
+require _SHOT_MAGIC_LOAD_DIR . '/emberlabs/openflame/Core/Autoloader.php';
+Autoloader::register(_SHOT_MAGIC_LOAD_DIR);
 
 // Force full debug on here
 @error_reporting(E_ALL);
@@ -74,9 +84,9 @@ if(@get_magic_quotes_runtime())
 }
 
 // load special runtime files
-require SHOT_INCLUDE_ROOT . 'emberlabs/shot/Runtime/Functions.php';
-require SHOT_INCLUDE_ROOT . 'emberlabs/shot/Runtime/Injectors.php';
-//require SHOT_INCLUDE_ROOT . 'emberlabs/shot/Runtime/Listeners.php';
+require _SHOT_MAGIC_LOAD_DIR . '/emberlabs/shot/Runtime/Functions.php';
+require _SHOT_MAGIC_LOAD_DIR . '/emberlabs/shot/Runtime/Injectors.php';
+//require _SHOT_MAGIC_LOAD_DIR . '/emberlabs/shot/Runtime/Listeners.php';
 
 // do we leave debug on, or...
 if(!SHOT_DEBUG)

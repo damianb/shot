@@ -41,8 +41,6 @@ $_defaults = array(
 	'SHOT_IN_PHAR'					=> false,
 
 	'SHOT_DEBUG'					=> false,
-	'SHOT_DEBUG_SHOW_CONTEXT'		=> false,
-	'SHOT_DEBUG_UNWRAP'				=> 0,
 
 	'SHOT_CONFIG_ROOT'				=> SHOT_ROOT . '/config',
 	'SHOT_LANGUAGE_ROOT'			=> SHOT_ROOT . '/app/language',

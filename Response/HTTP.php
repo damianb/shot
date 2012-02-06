@@ -30,7 +30,7 @@ use \emberlabs\shot\Kernel;
  * @license     http://opensource.org/licenses/mit-license.php The MIT License
  * @link        https://github.com/emberlabs/shot/
  */
-class Standard
+class HTTP
 	implements ResponseInterface
 {
 	protected $t_vars, $content_type, $headers, $body, $use_templating;

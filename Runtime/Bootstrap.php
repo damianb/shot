@@ -57,7 +57,11 @@ foreach($_defaults as $_const => $_default)
 		define($_const, $_default);
 	}
 }
-define('_SHOT_MAGIC_LOAD_DIR', (!SHOT_IN_PHAR) ? SHOT_INCLUDE_ROOT : sprintf('phar://%s/%s.phar', SHOT_LIB_ROOT, SHOT_CORE_PHAR));
+// magic load dir for magic
+if(!defined('_SHOT_MAGIC_LOAD_DIR'))
+{
+	define('_SHOT_MAGIC_LOAD_DIR', (!SHOT_IN_PHAR) ? SHOT_INCLUDE_ROOT : sprintf('phar://%s/%s.phar', SHOT_LIB_ROOT, SHOT_CORE_PHAR));
+}
 
 // set up autoloader
 require _SHOT_MAGIC_LOAD_DIR . '/emberlabs/openflame/Core/Autoloader.php';

@@ -283,7 +283,9 @@ class WebKernel
 
 			echo $body;
 
-			// Set our content-length header, and send all headers.
+			// Set our status, content-length, and content-type headers, and send all headers.
+			$this->header->setHTTPStatus($this->response->getResponseCode());
+			$this->header->setHeader('Content-Type', $this->response->getContentType());
 			$this->header->setHeader('Content-Length', ob_get_length());
 			$this->header->sendHeaders();
 			ob_end_flush();

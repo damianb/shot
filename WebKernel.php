@@ -171,14 +171,6 @@ class WebKernel
 			unset($config);
 		}
 
-		/*
-		// load language entries
-		if($this->offsetExists('shot.language.entries'))
-		{
-			$this->language->loadEntries($this->offsetGet('shot.language.entries'));
-		}
-		*/
-
 		// snag headers
 		$this->header->snagHeaders();
 
@@ -213,7 +205,7 @@ class WebKernel
 				$this->router->storeRoute($error)
 					->setErrorRoute($error);
 
-				//$this->cache->storeData('shot_routes', $this->router->getFullRouteCache());
+				$this->cache->storeData('shot_routes', $this->router->getFullRouteCache());
 			}
 		}
 		unset($routes, $home, $error);

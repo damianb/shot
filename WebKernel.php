@@ -54,14 +54,19 @@ class WebKernel
 		if(!isset(self::$instances[$instance]))
 		{
 			self::$instances[$instance] = new self();
+			self::$instances[$instance]->init();
 		}
 
 		return self::$instances[$instance];
 	}
 
-	public function __construct()
+	protected function __construct()
 	{
 		$this->injector = DependencyInjector::getInstance();
+	}
+
+	protected function init()
+	{
 		$this->request = new StandardRequest();
 		$this->response = new HTTPResponse();
 	}

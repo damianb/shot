@@ -159,9 +159,12 @@ class WebKernel
 					}
 
 					$config = JSON::decode(SHOT_CONFIG_ROOT . sprintf('/%s.json', basename($file, '.json')));
-					foreach($config as $_k => $_v)
+					if(!empty($config))
 					{
-						$this->offsetSet($_k, $_v);
+						foreach($config as $_k => $_v)
+						{
+							$this->offsetSet($_k, $_v);
+						}
 					}
 				}
 			}

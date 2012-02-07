@@ -141,29 +141,32 @@ class WebKernel
 	public function boot()
 	{
 		$config = JSON::decode(file_get_contents(SHOT_CONFIG_ROOT . '/config.json'));
-		foreach($config as $_k => $_v)
+		if(!empty($config))
 		{
-			$this->offsetSet($_k, $_v);
-		}
-
-		// load extra config files
-		if($this->offsetExists('shot.config.files'))
-		{
-			foreach($this->offsetGet('shot.config.files') as $file)
+			foreach($config as $_k => $_v)
 			{
-				if(!file_exists(SHOT_CONFIG_ROOT . sprintf('/%s,json', basename($file, '.json'))))
-				{
-					continue;
-				}
+				$this->offsetSet($_k, $_v);
+			}
 
-				$config = JSON::decode(file_get_contents(SHOT_CONFIG_ROOT . sprintf('/%s,json', basename($file, '.json'))));
-				foreach($config as $_k => $_v)
+			// load extra config files
+			if($this->offsetExists('shot.config.files'))
+			{
+				foreach($this->offsetGet('shot.config.files') as $file)
 				{
-					$this->offsetSet($_k, $_v);
+					if(!file_exists(SHOT_CONFIG_ROOT . sprintf('/%s,json', basename($file, '.json'))))
+					{
+						continue;
+					}
+
+					$config = JSON::decode(file_get_contents(SHOT_CONFIG_ROOT . sprintf('/%s,json', basename($file, '.json'))));
+					foreach($config as $_k => $_v)
+					{
+						$this->offsetSet($_k, $_v);
+					}
 				}
 			}
+			unset($config);
 		}
-		unset($config);
 
 		// load language entries
 		if($this->offsetExists('shot.language.entries'))
@@ -207,7 +210,7 @@ class WebKernel
 		$_SERVER; // have to poke the _SERVER superglobal for it to be usable in $_GLOBALS sometimes. possible php bug, idk.
 
 		$request = $this->input->getInput('SERVER::REQUEST_URI', '/');
-		if(!$request->wasSet())
+		if(!$request->getWasSet())
 		{
 			$request = $this->input->getInput('REQUEST::QUERY_URI', '/');
 		}

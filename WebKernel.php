@@ -153,12 +153,12 @@ class WebKernel
 			{
 				foreach($this->offsetGet('shot.config.files') as $file)
 				{
-					if(!file_exists(SHOT_CONFIG_ROOT . sprintf('/%s,json', basename($file, '.json'))))
+					if(!file_exists(SHOT_CONFIG_ROOT . sprintf('/%s.json', basename($file, '.json'))))
 					{
 						continue;
 					}
 
-					$config = JSON::decode(file_get_contents(SHOT_CONFIG_ROOT . sprintf('/%s,json', basename($file, '.json'))));
+					$config = JSON::decode(SHOT_CONFIG_ROOT . sprintf('/%s.json', basename($file, '.json')));
 					foreach($config as $_k => $_v)
 					{
 						$this->offsetSet($_k, $_v);
@@ -168,11 +168,13 @@ class WebKernel
 			unset($config);
 		}
 
+		/*
 		// load language entries
 		if($this->offsetExists('shot.language.entries'))
 		{
 			$this->language->loadEntries($this->offsetGet('shot.language.entries'));
 		}
+		*/
 
 		// snag headers
 		$this->header->snagHeaders();
@@ -199,7 +201,7 @@ class WebKernel
 				$this->router->storeRoute($error)
 					->setErrorRoute($error);
 
-				$this->cache->storeData('shot_routes', $this->router->getFullRouteCache());
+				//$this->cache->storeData('shot_routes', $this->router->getFullRouteCache());
 			}
 		}
 		unset($routes, $home, $error);

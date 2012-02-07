@@ -21,7 +21,7 @@
 namespace emberlabs\shot\Request;
 use \emberlabs\shot\Kernel;
 use \emberlabs\shot\Model\ModelBase;
-use \emberlabs\openflame\Route\RouteInstance;
+use \emberlabs\openflame\Router\RouteInstance;
 
 /**
  * Shot - Request interface
@@ -32,7 +32,7 @@ use \emberlabs\openflame\Route\RouteInstance;
  * @license     http://opensource.org/licenses/mit-license.php The MIT License
  * @link        https://github.com/emberlabs/shot/
  */
-interface RequestInterface 
+interface RequestInterface
 {
 	public function getMethod();
 	public function getReferer();

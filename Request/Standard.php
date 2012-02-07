@@ -20,7 +20,7 @@
 
 namespace emberlabs\shot\Request;
 use \emberlabs\shot\WebKernel;
-use \emberlabs\openflame\Route\RouteInstance;
+use \emberlabs\openflame\Router\RouteInstance;
 
 /**
  * Shot - Standard request object

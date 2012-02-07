@@ -182,6 +182,15 @@ class WebKernel
 		// snag headers
 		$this->header->snagHeaders();
 
+		// load controllers
+		if($this->offsetExists('shot.controllers.entries'))
+		{
+			foreach($this->offsetGet('shot.controllers.entries') as $slot => $controller)
+			{
+				$this->injector->setInjector($slot, $controller);
+			}
+		}
+
 		// load routes
 		if($this->offsetExists('shot.routes.entries'))
 		{

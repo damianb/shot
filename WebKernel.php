@@ -20,7 +20,6 @@
 
 namespace emberlabs\shot;
 use \emberlabs\shot\Request\Standard as StandardRequest;
-use \emberlabs\shot\Request\Authenticated as AuthenticatedRequest;
 use \emberlabs\shot\Response\HTTP as HTTPResponse;
 use \emberlabs\openflame\Core\Core;
 use \emberlabs\openflame\Core\DependencyInjector;
@@ -67,14 +66,9 @@ class WebKernel
 		$this->response = new HTTPResponse();
 	}
 
-	public function getVersion()
+	public static function getShotVersion()
 	{
 		return self::$version;
-	}
-
-	public function getFrameworkVersion()
-	{
-		return parent::getVersion();
 	}
 
 	public static function version()
@@ -84,7 +78,7 @@ class WebKernel
 
 	public function __toString()
 	{
-		return sprintf('shot v%s || of-f v%s', $this->getVersion(), $this->getFrameworkVersion());
+		return sprintf('shot v%s || of-f v%s', self::getShotVersion(), self::getVersion());
 	}
 
 	/**
@@ -152,12 +146,12 @@ class WebKernel
 		{
 			foreach($this->offsetGet('shot.config.files') as $file)
 			{
-				if(!file_exists(SHOT_CONFIG_ROOT . '/' . basename($file, '.json') . '.json'))
+				if(!file_exists(SHOT_CONFIG_ROOT . sprintf('/%s,json', basename($file, '.json'))))
 				{
 					continue;
 				}
 
-				$config = JSON::decode(file_get_contents(SHOT_CONFIG_ROOT . '/' . basename($file, '.json') . '.json'));
+				$config = JSON::decode(file_get_contents(SHOT_CONFIG_ROOT . sprintf('/%s,json', basename($file, '.json'))));
 				foreach($config as $_k => $_v)
 				{
 					$this->offsetSet($_k, $_v);

@@ -229,7 +229,7 @@ class WebKernel
 			->setRoute($route);
 
 		$controller = $this->injector->getInjector($route->getRouteCallback());
-		$this->controller = new $controller($this->request, $this->response);
+		$this->controller = new $controller($this, $this->request, $this->response);
 
 		$controller->before();
 		$this->response = $controller->runController();

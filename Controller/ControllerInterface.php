@@ -21,6 +21,7 @@
 namespace emberlabs\shot\Controller;
 use \emberlabs\shot\Request\RequestInterface;
 use \emberlabs\shot\Response\ResponseInterface;
+use \emberlabs\shot\WebKernel;
 use \emberlabs\openflame\Route\RouteInstance;
 
 /**
@@ -34,7 +35,7 @@ use \emberlabs\openflame\Route\RouteInstance;
  */
 interface ControllerInterface
 {
-	public function __construct(RequestInterface $request, ResponseInterface $response);
+	public function __construct(WebKernel $app, RequestInterface $request, ResponseInterface $response);
 	public function getName();
 	public function setName($name);
 	public function getRequiredAuths();

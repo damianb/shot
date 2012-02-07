@@ -231,9 +231,9 @@ class WebKernel
 		$controller = $this->injector->getInjector($route->getRouteCallback());
 		$this->controller = new $controller($this, $this->request, $this->response);
 
-		$controller->before();
-		$this->response = $controller->runController();
-		$controller->after();
+		$this->controller->before();
+		$this->response = $this->controller->runController();
+		$this->controller->after();
 	}
 
 	public function display()

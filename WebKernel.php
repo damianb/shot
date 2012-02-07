@@ -313,7 +313,7 @@ class WebKernel
 
 	public function __set($field, $value)
 	{
-		parent::setObject($field);
+		parent::setObject($field, $value);
 	}
 
 	/**

@@ -241,7 +241,7 @@ class WebKernel
 		try
 		{
 			ob_start();
-			if($this->response->usingTemplates())
+			if($this->response->isUsingTemplating())
 			{
 				// load assets
 				if($this->offsetExists('shot.assets.entries'))

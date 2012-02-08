@@ -288,11 +288,18 @@ class WebKernel
 			{
 				foreach($this->response->getHeaders() as $header => $value)
 				{
-					$this->header->setHeader($header, $value);
+					if($value !== NULL)
+					{
+						$this->header->setHeader($header, $value);
+					}
+					else
+					{
+						$this->header->removeHeader($header);
+					}
 				}
 			}
 			$this->header->setHTTPStatus($this->response->getResponseCode());
-			$this->header->setHeader('Content-Type', $this->response->getContentType());
+			$this->header->setHeader('Content-Type', $this->response->getContentType() . '; charset=utf-8');
 			$this->header->setHeader('Content-Length', ob_get_length());
 			$this->header->sendHeaders();
 			ob_end_flush();

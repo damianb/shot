@@ -41,6 +41,5 @@ interface ControllerInterface
 	public function getRequiredAuths();
 	public function setRequiredAuths(array $auths);
 	public function before();
-	public function runController();
 	public function after();
 }

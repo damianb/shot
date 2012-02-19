@@ -53,7 +53,7 @@ class WebKernel
 
 		if(!isset(self::$instances[$instance]))
 		{
-			self::$instances[$instance] = new self();
+			self::$instances[$instance] = new static();
 			self::$instances[$instance]->_init();
 		}
 

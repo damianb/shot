@@ -251,7 +251,7 @@ class WebKernel
 						foreach($_assets as $asset_name => $asset_url)
 						{
 							$this->asset->registerCustomAsset($type, $asset_name)
-								->setURL($asset_path . '/' . $type . '/' . $asset_url);
+								->setURL($this->getBasePath() . '/' . $type . '/' . $asset_url);
 						}
 					}
 				}

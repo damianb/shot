@@ -281,8 +281,6 @@ class WebKernel
 				$body = $this->response->getBody();
 			}
 
-			echo $body;
-
 			// Set our headers, and send all headers.
 			if($this->response->getHeaders())
 			{
@@ -301,7 +299,17 @@ class WebKernel
 			$this->header->setHTTPStatus($this->response->getResponseCode());
 			$this->header->setHeader('Content-Type', $this->response->getContentType() . '; charset=utf-8');
 			$this->header->setHeader('Content-Length', ob_get_length());
+			if($this->cookie)
+			{
+				foreach($this->cookie->getAllCookies() as $cookie)
+				{
+					$this->header->setHeader('Set-Cookie', $cookie->getFullCookieString());
+				}
+			}
 			$this->header->sendHeaders();
+
+			echo $body;
+
 			ob_end_flush();
 		}
 		catch(\Exception $e)

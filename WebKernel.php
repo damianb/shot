@@ -251,7 +251,7 @@ class WebKernel
 						foreach($_assets as $asset_name => $asset_url)
 						{
 							$this->asset->registerCustomAsset($type, $asset_name)
-								->setURL($this->getBasePath() . '/' . $type . '/' . $asset_url);
+								->setURL('assets/' . $type . '/' . $asset_url);
 						}
 					}
 				}
@@ -296,6 +296,9 @@ class WebKernel
 					}
 				}
 			}
+
+			echo $body;
+
 			$this->header->setHTTPStatus($this->response->getResponseCode());
 			$this->header->setHeader('Content-Type', $this->response->getContentType() . '; charset=utf-8');
 			$this->header->setHeader('Content-Length', ob_get_length());
@@ -307,8 +310,6 @@ class WebKernel
 				}
 			}
 			$this->header->sendHeaders();
-
-			echo $body;
 
 			ob_end_flush();
 		}

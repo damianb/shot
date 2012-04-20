@@ -79,6 +79,11 @@ abstract class ObjectController
 		return $this->request->getRoute()->get($input);
 	}
 
+	public function wasInputSet($input)
+	{
+		return $this->app->input->getInput($input, false)->getWasSet();
+	}
+
 	public function respond($body, $http_status, array $vars = NULL)
 	{
 		$this->response->setResponseCode((int) $http_status);

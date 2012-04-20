@@ -69,6 +69,28 @@ abstract class ObjectController
 		return $this;
 	}
 
+	public function getInput($input, $default = '')
+	{
+		return $this->request->getInput($input, $default);
+	}
+
+	public function getRouteInput($input)
+	{
+		return $this->request->getRoute()->get($input);
+	}
+
+	public function respond($body, $http_status, array $vars = NULL)
+	{
+		$this->response->setResponseCode((int) $http_status);
+		$this->response->setBody($body);
+		if($vars)
+		{
+			$this->response->setTemplateVars($vars);
+		}
+
+		return $this->response;
+	}
+
 	public function before() { }
 
 	abstract public function runController();

@@ -236,50 +236,57 @@ class WebKernel
 		$this->controller->after();
 	}
 
+	public function render()
+	{
+		if($this->response->isUsingTemplating())
+		{
+			// load assets
+			if($this->offsetExists('shot.assets.entries'))
+			{
+				foreach($this->offsetGet('shot.assets.entries') as $type => $_assets)
+				{
+					foreach($_assets as $asset_name => $asset_url)
+					{
+						$this->asset->registerCustomAsset($type, $asset_name)
+							->setURL('assets/' . $type . '/' . $asset_url);
+					}
+				}
+			}
+
+			// load urls
+			if($this->offsetExists('shot.urls.entries'))
+			{
+				foreach($this->offsetGet('shot.urls.entries') as $name => $pattern)
+				{
+					$this->url->newPattern($name, $pattern);
+				}
+			}
+
+			// prepare twig
+			$twig_env = $this->twig->getTwigEnvironment();
+			$twig_env->addGlobal('timer', $this->timer);
+			$twig_env->addGlobal('asset', $this->asset_proxy);
+			$twig_env->addGlobal('language', $this->language_proxy);
+			$twig_env->addGlobal('url', $this->url_proxy);
+
+			$twig_page = $twig_env->loadTemplate($this->response->getBody());
+
+			$body = $twig_page->render($this->response->getTemplateVars());
+		}
+		else
+		{
+			$body = $this->response->getBody();
+		}
+
+		return $body;
+	}
+
 	public function display()
 	{
 		try
 		{
 			ob_start();
-			if($this->response->isUsingTemplating())
-			{
-				// load assets
-				if($this->offsetExists('shot.assets.entries'))
-				{
-					foreach($this->offsetGet('shot.assets.entries') as $type => $_assets)
-					{
-						foreach($_assets as $asset_name => $asset_url)
-						{
-							$this->asset->registerCustomAsset($type, $asset_name)
-								->setURL('assets/' . $type . '/' . $asset_url);
-						}
-					}
-				}
-
-				// load urls
-				if($this->offsetExists('shot.urls.entries'))
-				{
-					foreach($this->offsetGet('shot.urls.entries') as $name => $pattern)
-					{
-						$this->url->newPattern($name, $pattern);
-					}
-				}
-
-				// prepare twig
-				$twig_env = $this->twig->getTwigEnvironment();
-				$twig_env->addGlobal('timer', $this->timer);
-				$twig_env->addGlobal('asset', $this->asset_proxy);
-				$twig_env->addGlobal('language', $this->language_proxy);
-				$twig_env->addGlobal('url', $this->url_proxy);
-
-				$twig_page = $twig_env->loadTemplate($this->response->getBody());
-
-				$body = $twig_page->render($this->response->getTemplateVars());
-			}
-			else
-			{
-				$body = $this->response->getBody();
-			}
+			$body = $this->render();
 
 			// Set our headers, and send all headers.
 			if($this->response->getHeaders())

@@ -39,7 +39,7 @@ class WebKernel
 	extends Core
 	implements ArrayAccess
 {
-	private static $version = '1.0.0-dev';
+	private static $version = '1.0.0-rc1';
 
 	protected $injector, $app_seed, $session_seed, $base_path;
 

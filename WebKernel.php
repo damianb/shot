@@ -268,13 +268,14 @@ class WebKernel
 		$controller = $this->injector->getInjector($route->getRouteCallback());
 		$this->controller = new $controller($this, $this->request, $this->response);
 
+		$controller_ary = array($this->controller);
 		/**
 		 * @hook shot.hook.runtime.runcontroller
 		 *  - pre controller->runController() hook point to allow modification of the controller on the fly
 		 *
 		 *  - provides: $controller, the controller to be run momentarily
 		 */
-		$this->hook('shot.hook.runtime.runcontroller', array($this->controller));
+		$this->hook('shot.hook.runtime.runcontroller', $controller_ary);
 
 		$this->controller->before();
 		$this->response = $this->controller->runController();

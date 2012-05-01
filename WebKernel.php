@@ -335,13 +335,15 @@ class WebKernel
 			$body = $this->response->getBody();
 		}
 
+		$body_ary = array($body);
 		/**
 		 * @hook shot.hook.runtime.render.post
 		 *  - post-run application hook point, executed after the template is rendered
 		 *
 		 *  - provides: $body - the rendered template data
 		 */
-		$this->hook('shot.hook.runtime.run.post', array($body));
+		$this->hook('shot.hook.runtime.render.post', $body_ary);
+		$body = reset($body_ary);
 
 		return $body;
 	}

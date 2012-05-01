@@ -24,6 +24,8 @@ use \emberlabs\shot\Response\HTTP as HTTPResponse;
 use \emberlabs\openflame\Core\Core;
 use \emberlabs\openflame\Core\DependencyInjector;
 use \emberlabs\openflame\Core\Utility\JSON;
+use \emberlabs\openflame\Event\Dispatcher;
+use \emberlabs\openflame\Event\Instance as Event;
 use \ArrayAccess;
 
 /**
@@ -135,6 +137,29 @@ class WebKernel
 	}
 
 	/**
+	 * Hooking methods
+	 */
+
+	public function blindHook($name)
+	{
+		$hook = Event::newEvent($name)
+			->setSource($this);
+
+		$this->dispatcher->trigger($hook, Dispatcher::TRIGGER_MIXEDBREAK);
+	}
+
+	public function hook($name, array &$data)
+	{
+		$hook = Event::newEvent($name)
+			->setSource($this)
+			->setData($data);
+
+		$this->dispatcher->trigger($hook, Dispatcher::TRIGGER_MIXEDBREAK);
+
+		$data = $hook->getData();
+	}
+
+	/**
 	 * Site run methods
 	 */
 
@@ -209,11 +234,23 @@ class WebKernel
 			}
 		}
 		unset($routes, $home, $error);
+
+		/**
+		 * @hook shot.hook.runtime.boot.post
+		 *  - post application "boot" hook point
+		 */
+		$this->blindHook('shot.hook.runtime.boot.post');
 	}
 
 	public function run()
 	{
-		$_SERVER; // have to poke the _SERVER superglobal for it to be usable in $_GLOBALS sometimes. possible php bug, idk.
+		$_SERVER; // have to poke the _SERVER superglobal for it to be usable in $_GLOBALS sometimes.
+
+		/**
+		 * @hook shot.hook.runtime.run.pre
+		 *  - pre-run application hook point, executed before controller route is loaded, controller run
+		 */
+		$this->blindHook('shot.hook.runtime.run.pre');
 
 		$request = $this->input->getInput('SERVER::REQUEST_URI', '/');
 		if(!$request->getWasSet())
@@ -231,13 +268,33 @@ class WebKernel
 		$controller = $this->injector->getInjector($route->getRouteCallback());
 		$this->controller = new $controller($this, $this->request, $this->response);
 
+		/**
+		 * @hook shot.hook.runtime.runcontroller
+		 *  - pre controller->runController() hook point to allow modification of the controller on the fly
+		 *
+		 *  - provides: $controller, the controller to be run momentarily
+		 */
+		$this->hook('shot.hook.runtime.runcontroller', array($this->controller));
+
 		$this->controller->before();
 		$this->response = $this->controller->runController();
 		$this->controller->after();
+
+		/**
+		 * @hook shot.hook.runtime.run.post (blind)
+		 *  - post-run application hook point, executed after controller route is loaded, controller run
+		 */
+		$this->blindHook('shot.hook.runtime.run.post');
 	}
 
 	public function render()
 	{
+		/**
+		 * @hook shot.hook.runtime.render.pre
+		 *  - post-run application hook point, executed before the template is rendered
+		 */
+		$this->blindHook('shot.hook.runtime.render.pre');
+
 		if($this->response->isUsingTemplating())
 		{
 			// load assets
@@ -264,7 +321,7 @@ class WebKernel
 
 			// prepare twig
 			$twig_env = $this->twig->getTwigEnvironment();
-			$twig_env->addGlobal('timer', $this->timer);
+			//$twig_env->addGlobal('timer', $this->timer);
 			$twig_env->addGlobal('asset', $this->asset_proxy);
 			$twig_env->addGlobal('language', $this->language_proxy);
 			$twig_env->addGlobal('url', $this->url_proxy);
@@ -278,11 +335,25 @@ class WebKernel
 			$body = $this->response->getBody();
 		}
 
+		/**
+		 * @hook shot.hook.runtime.render.post
+		 *  - post-run application hook point, executed after the template is rendered
+		 *
+		 *  - provides: $body - the rendered template data
+		 */
+		$this->hook('shot.hook.runtime.run.post', array($body));
+
 		return $body;
 	}
 
 	public function display()
 	{
+		/**
+		 * @hook shot.hook.runtime.display.pre
+		 *  - pre-display application hook point, executed before view is rendered and page output
+		 */
+		$this->blindHook('shot.hook.runtime.display.pre');
+
 		try
 		{
 			ob_start();
@@ -325,9 +396,22 @@ class WebKernel
 			ob_clean();
 			throw $e;
 		}
+
+		/**
+		 * @hook shot.hook.runtime.display.post
+		 *  - post-display application hook point, executed after view is rendered and page output
+		 */
+		$this->blindHook('shot.hook.runtime.display.post');
 	}
 
-	public function shutdown() { }
+	public function shutdown()
+	{
+		/**
+		 * @hook shot.hook.runtime.shutdown
+		 *  - application shutdown hook point, executed before exit is called and script terminated.
+		 */
+		$this->blindHook('shot.hook.runtime.shutdown');
+	}
 
 	/**
 	 * Magic methods

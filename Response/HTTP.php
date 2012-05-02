@@ -138,5 +138,7 @@ class HTTP
 	public function setResponseCode($code = 200)
 	{
 		$this->response = (int) $code;
+
+		return $this;
 	}
 }

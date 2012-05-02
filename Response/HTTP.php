@@ -66,6 +66,8 @@ class HTTP
 		{
 			$this->content_type = $type;
 		}
+
+		return $this;
 	}
 
 	public function getHeaders()

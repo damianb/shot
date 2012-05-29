@@ -21,6 +21,7 @@
 namespace emberlabs\shot;
 use \emberlabs\shot\Request\Standard as StandardRequest;
 use \emberlabs\shot\Response\HTTP as HTTPResponse;
+use \emberlabs\shot\Runtime\ExceptionHandler;
 use \emberlabs\openflame\Core\Core;
 use \emberlabs\openflame\Core\DependencyInjector;
 use \emberlabs\openflame\Core\Utility\JSON;
@@ -235,6 +236,26 @@ class WebKernel
 		}
 		unset($routes, $home, $error);
 
+		// defaults
+		$defaults = array(
+			'APP_EXHANDLER_UNWRAP'			=> false,
+		);
+		/**
+		 * @hook shot.hook.constant.defaults
+		 *  - used to provide default applicaton constants
+		 *    (said constants should be defined in the index file if an override is intended)
+		 */
+		$this->hook('shot.hook.constant.defaults', $defaults);
+		foreach($defaults as $const => $default)
+		{
+			if(!defined($const))
+			{
+				define($const, $default);
+			}
+		}
+
+		$this->setBasePath($this['site.urlbase'] ?: '/');
+
 		/**
 		 * @hook shot.hook.runtime.boot.post
 		 *  - post application "boot" hook point
@@ -244,7 +265,7 @@ class WebKernel
 
 	public function run()
 	{
-		$_SERVER; // have to poke the _SERVER superglobal for it to be usable in $_GLOBALS sometimes.
+		$_SERVER;$_ENV; // have to poke the _SERVER superglobal for it to be usable in $_GLOBALS sometimes (some damn php.ini config)
 
 		/**
 		 * @hook shot.hook.runtime.run.pre
@@ -252,34 +273,40 @@ class WebKernel
 		 */
 		$this->blindHook('shot.hook.runtime.run.pre');
 
-		$request = $this->input->getInput('SERVER::REQUEST_URI', '/');
-		if(!$request->getWasSet())
-		{
-			$request = $this->input->getInput('REQUEST::QUERY_URI', '/');
+		try {
+			$request = $this->input->getInput('SERVER::REQUEST_URI', '/');
+			if(!$request->getWasSet())
+			{
+				$request = $this->input->getInput('REQUEST::QUERY_URI', '/');
+			}
+
+			$uri = $request->getClean();
+
+			$route = $this->router->processRequest($uri);
+
+			$this->request->setURI($uri)
+				->setRoute($route);
+
+			$controller = $this->injector->getInjector($route->getRouteCallback());
+			$this->controller = new $controller($this, $this->request, $this->response);
+
+			$controller_ary = array($this->controller);
+			/**
+			 * @hook shot.hook.runtime.runcontroller
+			 *  - pre controller->runController() hook point to allow modification of the controller on the fly
+			 *
+			 *  - provides: $controller, the controller to be run momentarily
+			 */
+			$this->hook('shot.hook.runtime.runcontroller', $controller_ary);
+
+			$this->controller->before();
+			$this->response = $this->controller->runController();
+			$this->controller->after();
 		}
-
-		$uri = $request->getClean();
-
-		$route = $this->router->processRequest($uri);
-
-		$this->request->setURI($uri)
-			->setRoute($route);
-
-		$controller = $this->injector->getInjector($route->getRouteCallback());
-		$this->controller = new $controller($this, $this->request, $this->response);
-
-		$controller_ary = array($this->controller);
-		/**
-		 * @hook shot.hook.runtime.runcontroller
-		 *  - pre controller->runController() hook point to allow modification of the controller on the fly
-		 *
-		 *  - provides: $controller, the controller to be run momentarily
-		 */
-		$this->hook('shot.hook.runtime.runcontroller', $controller_ary);
-
-		$this->controller->before();
-		$this->response = $this->controller->runController();
-		$this->controller->after();
+		catch(\Exception $e)
+		{
+			ExceptionHandler::invoke($e);
+		}
 
 		/**
 		 * @hook shot.hook.runtime.run.post (blind)
@@ -357,6 +384,56 @@ class WebKernel
 		 */
 		$this->blindHook('shot.hook.runtime.display.pre');
 
+		// Global template vars
+		if($this->response->isUsingTemplating())
+		{
+			// global template variables to use...
+			$global_template_vars = array(
+				'DEBUG'					=> SHOT_DEBUG,
+
+				'version'				=> array(
+					'shot'					=> $this->getShotVersion(),
+					'openflame'				=> $this->getVersion(),
+				),
+			);
+
+			/**
+			 * @hook shot.hook.template.globalvars
+			 *  - used to modify application-wide template variables
+			 */
+			$this->hook('shot.hook.template.globalvars', $global_template_vars);
+			$this->response->setTemplateVars(array_merge($global_template_vars, $this->response->getTemplateVars()));
+
+			$twig = $this->twig->getTwigEnvironment();
+			$twig->addGlobal('stat', $this->stat);
+		}
+
+		// app-wide headers to send...
+		$global_headers = array(
+			// drop PHP's x-powered-by header
+			'X-Powered-By'					=> NULL,
+
+			// prevent caching
+			'Cache-Control'					=> 'no-cache',
+			'Pragma'						=> 'no-cache',
+
+			// NO FRAMES.
+			'X-Frame-Options'				=> 'DENY',
+
+			// IE8 header
+			'X-XSS-Protection'				=> '1; mode=block',
+
+			// Chromium, IE8 implement this.
+			'X-Content-Type-Options'		=> 'nosniff',
+		);
+
+		/**
+		 * @hook shot.hook.header.globalheaders
+		 *  - used to modify application-wide headers to send
+		 */
+		$this->hook('shot.hook.header.globalheaders', $global_headers);
+		$this->response->setHeaders(array_merge($global_headers, $this->response->getHeaders() ?: array()));
+
 		try
 		{
 			ob_start();
@@ -397,7 +474,8 @@ class WebKernel
 		catch(\Exception $e)
 		{
 			ob_clean();
-			throw $e;
+			//throw $e;
+			ExceptionHandler::invoke($e);
 		}
 
 		/**

@@ -88,7 +88,16 @@ if(@get_magic_quotes_runtime())
 // load special runtime files
 require _SHOT_MAGIC_LOAD_DIR . '/emberlabs/shot/Runtime/Functions.php';
 require _SHOT_MAGIC_LOAD_DIR . '/emberlabs/shot/Runtime/Injectors.php';
-//require _SHOT_MAGIC_LOAD_DIR . '/emberlabs/shot/Runtime/Listeners.php';
+require _APP_MAGIC_LOAD_DIR . _APP_PATH . '/Runtime/Bootstrap.php';
+require _APP_MAGIC_LOAD_DIR . _APP_PATH . '/Runtime/Functions.php';
+require _APP_MAGIC_LOAD_DIR . _APP_PATH . '/Runtime/Injectors.php';
+
+// listeners afterwards
+require _SHOT_MAGIC_LOAD_DIR . '/emberlabs/shot/Runtime/Listeners.php';
+require _APP_MAGIC_LOAD_DIR . _APP_PATH . '/Runtime/Listeners.php';
+
+// Set our exception handler to be THE exception handler
+set_exception_handler('\\emberlabs\\shot\\Runtime\\ExceptionHandler::invoke');
 
 // do we leave debug on, or...
 if(!SHOT_DEBUG)
@@ -98,3 +107,14 @@ if(!SHOT_DEBUG)
 }
 
 unset($_e_reporting, $_defaults, $_const, $_default);
+
+
+// prepare the cache
+$app['cache.path'] = SHOT_ROOT . '/cache/';
+$app['cache.engine'] = (function_exists('apc_cache_info') && !SHOT_DEBUG) ? 'apc' : 'json';
+
+// prepare twig
+$app['twig.lib_path'] = SHOT_VENDOR_ROOT . '/Twig/lib/Twig/';
+$app['twig.cache_path'] = SHOT_ROOT . '/cache/viewcache/';
+$app['twig.template_path'] = SHOT_VIEW_ROOT . '/';
+$app['twig.debug'] = SHOT_DEBUG;

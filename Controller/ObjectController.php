@@ -37,13 +37,17 @@ abstract class ObjectController
 	implements ControllerInterface
 {
 	protected $app, $request, $response, $name, $auths;
+	protected $bypass_install_check = false, $cacheable = false, $cache_ttl = 0;
 
-	public function __construct(WebKernel $app, RequestInterface $request, ResponseInterface $response)
+	final public function __construct(WebKernel $app, RequestInterface $request, ResponseInterface $response)
 	{
 		$this->app = $app;
 		$this->request = $request;
 		$this->response = $response;
+		$this->init();
 	}
+
+	protected function init() { }
 
 	public function getName()
 	{
@@ -103,5 +107,33 @@ abstract class ObjectController
 	public function after()
 	{
 		return $this->response;
+	}
+
+	final public function isCacheable()
+	{
+		return $this->cacheable;
+	}
+
+	final public function canRunWithoutInstall()
+	{
+		return $this->bypass_install_check;
+	}
+
+	protected function defineCacheBinds()
+	{
+		// this should probably be overridden by the child controller
+		return array();
+	}
+
+	final public function getCacheBinds()
+	{
+		return array_merge($this->defineCacheBinds(), array(
+			get_class($this),
+		));
+	}
+
+	final public function getCacheTTL()
+	{
+		return (int) $this->cache_ttl;
 	}
 }

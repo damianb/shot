@@ -402,7 +402,7 @@ class WebKernel
 			 *  - used to modify application-wide template variables
 			 */
 			$this->hook('shot.hook.template.globalvars', $global_template_vars);
-			$this->response->setTemplateVars(array_merge($global_template_vars, $this->response->getTemplateVars()));
+			$this->response->setTemplateVars(array_merge($global_template_vars, (array) $this->response->getTemplateVars()));
 
 			$twig = $this->twig->getTwigEnvironment();
 			$twig->addGlobal('stat', $this->stat);

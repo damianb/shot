@@ -207,12 +207,22 @@ class Session
 
 	public function offsetExists($offset)
 	{
+		if(empty($this->session))
+		{
+			$this->loadSession();
+		}
+
 		$storage = $this->session->getMeta('data.store');
 		return isset($storage[$offset]) ? true : false;
 	}
 
 	public function offsetGet($offset)
 	{
+		if(empty($this->session))
+		{
+			$this->loadSession();
+		}
+
 		$storage = $this->session->getMeta('data.store');
 		if(!isset($storage[$offset]))
 		{
@@ -223,11 +233,21 @@ class Session
 
 	public function offsetSet($offset, $value)
 	{
+		if(empty($this->session))
+		{
+			$this->loadSession();
+		}
+
 		$this->session->setMeta('data.store', array_merge((array) $this->session->getMeta('data.store'), array($offset => $value)));
 	}
 
 	public function offsetUnset($offset)
 	{
+		if(empty($this->session))
+		{
+			$this->loadSession();
+		}
+
 		$this->session->setMeta('data.store', array_merge((array) $this->session->getMeta('data.store'), array($offset => NULL)));
 	}
 }
